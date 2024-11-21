@@ -10,6 +10,7 @@ datasource db {
 model Ride {
   id          String    @id @default(uuid())
   customer_id String
+  origin      String
   destination String
   distance    Int
   duration    String
