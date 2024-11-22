@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaRideMapper } from '../mappers/prisma-ride-mapper';
-import { Ride } from '../../../../domain/shopper/enterprise/entities/ride';
-import { RideRepository } from '../../../../domain/shopper/application/repositories/ride-repository';
+import { Ride } from '../../../../domain/travel/enterprise/entities/ride';
+import { RideRepository } from '../../../../domain/travel/application/repositories/ride-repository';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()

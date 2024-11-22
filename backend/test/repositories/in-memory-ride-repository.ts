@@ -1,5 +1,5 @@
-import { RideRepository } from 'src/domain/shopper/application/repositories/ride-repository';
-import { Ride } from 'src/domain/shopper/enterprise/entities/ride';
+import { RideRepository } from 'src/domain/travel/application/repositories/ride-repository';
+import { Ride } from 'src/domain/travel/enterprise/entities/ride';
 
 export class InMemoryRideRepository implements RideRepository {
   public items: Ride[] = [];

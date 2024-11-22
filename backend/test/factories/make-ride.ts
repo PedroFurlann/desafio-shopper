@@ -1,7 +1,7 @@
 import {
   RideProps,
   Ride,
-} from '../../src/domain/shopper/enterprise/entities/ride';
+} from '../../src/domain/travel/enterprise/entities/ride';
 import { faker } from '@faker-js/faker';
 import { UniqueEntityID } from '../../src/core/entities/unique-entity-id';
 

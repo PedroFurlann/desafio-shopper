@@ -1,6 +1,6 @@
 import { UniqueEntityID } from '../../../../core/entities/unique-entity-id';
 import { Prisma, Ride as PrismaRide } from '@prisma/client';
-import { Ride } from '../../../../domain/shopper/enterprise/entities/ride';
+import { Ride } from '../../../../domain/travel/enterprise/entities/ride';
 
 export class PrismaRideMapper {
   static toDomain(raw: PrismaRide): Ride {

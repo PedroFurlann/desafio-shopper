@@ -1,4 +1,4 @@
-import { RideEvaluator } from '../../domain/shopper/application/evaluator/rideEvaluator';
+import { RideEvaluator } from '../../domain/travel/application/evaluator/rideEvaluator';
 import axios from 'axios';
 import { EnvService } from '../env/env.service';
 import { Injectable } from '@nestjs/common';

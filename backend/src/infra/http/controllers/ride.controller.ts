@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
-import { EstimateRideUseCase } from '../../../domain/shopper/use-cases/estimate-ride';
+import { EstimateRideUseCase } from '../../../domain/travel/use-cases/estimate-ride';
 import { z } from 'zod';
 import { InvalidDataException } from '../errors/InvalidDataException';
 import { InvalidDataValidationPipe } from '../pipes/invalid-data-validation.pipe';
