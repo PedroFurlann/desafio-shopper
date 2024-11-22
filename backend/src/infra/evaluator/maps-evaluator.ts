@@ -1,14 +1,18 @@
 import { RideEvaluator } from '../../domain/shopper/application/evaluator/rideEvaluator';
 import axios from 'axios';
 import { EnvService } from '../env/env.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class MapsEvaluator implements RideEvaluator {
-  constructor(private readonly envService: EnvService) {}
+  private apiKey: string;
+
+  constructor(private readonly envService: EnvService) {
+    this.apiKey = envService.get('GOOGLE_API_KEY');
+  }
 
   async getGeocodeAddress(address: string) {
-    const apiKey = this.envService.get('GOOGLE_API_KEY');
-
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${this.apiKey}`;
 
     const { data } = await axios.get(url);
 
@@ -42,12 +46,10 @@ export class MapsEvaluator implements RideEvaluator {
       travelMode: 'DRIVE',
     };
 
-    const apiKey = this.envService.get('GOOGLE_API_KEY');
-
     const { data } = await axios.post(url, body, {
       headers: {
         'Content-Type': 'application/json',
-        'X-Goog-Api-Key': apiKey,
+        'X-Goog-Api-Key': this.apiKey,
         'X-Goog-FieldMask':
           'routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline',
       },

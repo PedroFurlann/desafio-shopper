@@ -1,6 +1,22 @@
 version: '3.9'
 
 services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@db:5432/shopper-database?schema=public"
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "npx prisma migrate dev && npm run start:dev"
+    volumes:
+      - ./drivers.json:/app/drivers.json
+
   db:
     image: postgres:15
     ports:
@@ -10,5 +26,10 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: shopper-database
       PGDATA: /data/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres -d shopper-database'"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
     volumes:
       - ./data/pg:/data/postgres

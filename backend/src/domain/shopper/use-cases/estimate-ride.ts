@@ -62,10 +62,7 @@ export class EstimateRideUseCase {
     origin,
     destination,
   }: EstimateRideUseCaseRequest): Promise<EstimateRideUseCaseResponse> {
-    const data = readFileSync(
-      join(__dirname, '../../../../../drivers.json'),
-      'utf8',
-    );
+    const data = readFileSync(join(process.cwd(), 'drivers.json'), 'utf8');
 
     const drivers: Driver[] = JSON.parse(data);
 
