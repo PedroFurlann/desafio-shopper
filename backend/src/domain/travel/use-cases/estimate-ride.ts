@@ -110,7 +110,7 @@ export class EstimateRideUseCase {
             rating: driver.review.rating,
             comment: driver.review.comment,
           },
-          value: driver.value,
+          value: Number(driver.value.toFixed(2)),
         };
       }),
       routeResponse: estimatedRide,

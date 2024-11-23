@@ -9,9 +9,8 @@ export class InvalidDataValidationPipe implements PipeTransform {
       return this.schema.parse(value);
     } catch (error) {
       if (error instanceof ZodError) {
-        const errorDescription = error.errors
-          .map((e) => `${e.path.join('.')} - ${e.message}`)
-          .join('; ');
+        const errorDescription =
+          'Os dados fornecidos no corpo da requisição são inválidos';
 
         throw new BadRequestException({
           error_code: 'INVALID_DATA',
@@ -21,7 +20,7 @@ export class InvalidDataValidationPipe implements PipeTransform {
 
       throw new BadRequestException({
         error_code: 'INVALID_DATA',
-        error_description: 'Validation failed due to an unknown error.',
+        error_description: 'Validation falhou devido a um erro desconhecido',
       });
     }
   }
