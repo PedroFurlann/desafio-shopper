@@ -12,11 +12,11 @@ model Ride {
   customer_id String
   origin      String
   destination String
-  distance    Int
+  distance    Decimal
   duration    String
   driver_id   Int
   driver_name String
-  value       Int
+  value       Decimal
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
 }
