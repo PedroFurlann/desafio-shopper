@@ -26,6 +26,9 @@ export class PrismaRideRepository implements RideRepository {
           customer_id: customerId,
           driver_id: driverId,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
 
       if (!data) return null;
@@ -35,6 +38,9 @@ export class PrismaRideRepository implements RideRepository {
       const data = await this.prismaService.ride.findMany({
         where: {
           customer_id: customerId,
+        },
+        orderBy: {
+          createdAt: 'desc',
         },
       });
 

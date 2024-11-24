@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
+  Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { EstimateRideUseCase } from '../../../domain/travel/use-cases/estimate-ride';
@@ -13,6 +16,9 @@ import { InvalidDataValidationPipe } from '../pipes/invalid-data-validation.pipe
 import { DriverNotFoundException } from '../errors/DriverNotFoundException';
 import { InvalidDriverException } from '../errors/InvalidDriverException';
 import { ConfirmRideUseCase } from '../../../domain/travel/use-cases/confirm-ride';
+import { FetchCustomerAndDriverRidesUseCase } from '../../../domain/travel/use-cases/fetch-customer-and-driver-rides';
+import { RidesNotFoundException } from '../errors/RidesNotFoundException';
+import { RidePresenter } from '../presenters/ride-presenter';
 
 const estimateRideBodySchema = z.object({
   customerId: z.string().min(1, 'O customer ID não pode ser nulo'),
@@ -42,6 +48,7 @@ export class RideController {
   constructor(
     private readonly estimateRideUseCase: EstimateRideUseCase,
     private readonly confirmRideUseCase: ConfirmRideUseCase,
+    private readonly fetchCustomerAndDriverRidesUseCase: FetchCustomerAndDriverRidesUseCase,
   ) {}
 
   @Post('/estimate')
@@ -107,5 +114,35 @@ export class RideController {
     }
 
     return { success: true };
+  }
+
+  @Get('/:customer_id')
+  @HttpCode(200)
+  async fetchCustomerAndDriverRides(
+    @Param('customer_id') customerId: string,
+    @Query('driver_id') driverId?: number,
+  ): Promise<any> {
+    const result = await this.fetchCustomerAndDriverRidesUseCase.execute({
+      customerId,
+      driverId: Number(driverId),
+    });
+
+    if (result.isLeft()) {
+      const error = result.value;
+      if (error.message === '404') {
+        throw new RidesNotFoundException('Nenhum registro encontrado');
+      } else if (error.message === '400') {
+        throw new InvalidDriverException('Motorista invalido');
+      }
+    }
+
+    const ridesFormatted = result.isRight()
+      ? result.value.rides.map(RidePresenter.toHTTP)
+      : [];
+
+    return {
+      customer_id: customerId,
+      rides: ridesFormatted,
+    };
   }
 }
