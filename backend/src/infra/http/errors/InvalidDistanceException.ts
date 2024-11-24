@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class InvalidDriverException extends HttpException {
+export class InvalidDistanceException extends HttpException {
   constructor(errorDescription: string) {
     super(
       {
-        error_code: 'INVALID_DRIVER',
+        error_code: 'INVALID_DISTANCE',
         error_description: errorDescription,
       },
-      HttpStatus.BAD_REQUEST,
+      HttpStatus.NOT_ACCEPTABLE,
     );
   }
 }

@@ -1,9 +1,17 @@
 import { Ride } from '../../../domain/travel/enterprise/entities/ride';
 
+const extractFourDigitsFromUUID = (uuid: string): number => {
+  const numericString = uuid.replace(/\D+/g, '');
+
+  const fourDigits = numericString.slice(0, 4);
+
+  return parseFloat(fourDigits);
+};
+
 export class RidePresenter {
   static toHTTP(ride: Ride) {
     return {
-      id: Number(ride.id.toString().replace(/[^0-9]/g, '')),
+      id: extractFourDigitsFromUUID(ride.id.toString()),
       date: ride.createdAt,
       origin: ride.origin,
       destination: ride.destination,
