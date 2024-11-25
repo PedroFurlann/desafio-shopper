@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { List } from "phosphor-react";
 import Logo from '../assets/shopper-logo.webp';
 
-export const Navbar = () => {
+const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -35,7 +35,7 @@ export const Navbar = () => {
       style={{ boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4)' }}
     >
       <a href="/" className="cursor-pointer">
-        <img alt="Shopper logo" src={Logo} className="w-12 h-12 bg-transparent cursor-pointer" />
+        <img alt="Shopper logo" src={Logo} className="bg-transparent cursor-pointer" />
       </a>
 
       <div>
@@ -72,3 +72,5 @@ export const Navbar = () => {
     </div>
   );
 }
+
+export default Navbar
