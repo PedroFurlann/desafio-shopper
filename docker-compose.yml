@@ -17,6 +17,20 @@ services:
     volumes:
       - ./drivers.json:/app/drivers.json
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm run dev
+    volumes:
+      - ./frontend/src:/app/src
+      - /app/node_modules
+
   db:
     image: postgres:15
     ports:

@@ -61,8 +61,8 @@ export class MapsEvaluator implements RideEvaluator {
         longitude: originCoords.lng,
       },
       destination: {
-        latitude: originCoords.lat,
-        longitude: originCoords.lng,
+        latitude: destinationCoords.lat,
+        longitude: destinationCoords.lng,
       },
       distance: data.routes[0]?.distanceMeters,
       duration: data.routes[0]?.duration?.slice(0, -1),
