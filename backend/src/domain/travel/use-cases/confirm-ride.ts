@@ -2,9 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Either, left, right } from '../../../core/either';
 import { Ride } from '../enterprise/entities/ride';
 import { RideRepository } from '../application/repositories/ride-repository';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { DriverRepository } from "../application/repositories/driver-repository";
+import { DriverRepository } from '../application/repositories/driver-repository';
 
 interface ConfirmRideUseCaseRequest {
   customerId: string;
@@ -22,7 +20,10 @@ interface ConfirmRideUseCaseRequest {
 type ConfirmRideUseCaseResponse = Either<Error, null>;
 @Injectable()
 export class ConfirmRideUseCase {
-  constructor(private readonly rideRepository: RideRepository, private readonly driverRepository: DriverRepository) {}
+  constructor(
+    private readonly rideRepository: RideRepository,
+    private readonly driverRepository: DriverRepository,
+  ) {}
 
   async execute({
     customerId,
@@ -44,11 +45,12 @@ export class ConfirmRideUseCase {
       value: value,
     });
 
-    const data = readFileSync(join(process.cwd(), 'drivers.json'), 'utf8');
-
     const driverSelected = await this.driverRepository.findById(driver.id);
 
-    if (!driverSelected || driverSelected.name !== driver.name) {
+    if (
+      !driverSelected ||
+      driverSelected.name.toLowerCase() !== driver.name.toLowerCase()
+    ) {
       return left(new Error('404'));
     }
 

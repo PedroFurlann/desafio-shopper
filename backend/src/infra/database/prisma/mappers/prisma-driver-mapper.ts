@@ -1,9 +1,9 @@
+import { Driver } from '../../../../domain/travel/enterprise/entities/driver';
 import { UniqueEntityID } from '../../../../core/entities/unique-entity-id';
 import { Prisma, Driver as PrismaDriver } from '@prisma/client';
-import { Driver } from '../../../../domain/travel/enterprise/entities/Driver';
 
 export class PrismaDriverMapper {
-  static toDomain(raw: PrismaDriver): Driver {
+  static toDomain(raw: PrismaDriver) {
     return Driver.create(
       {
         name: raw.name,
@@ -16,7 +16,7 @@ export class PrismaDriverMapper {
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt ?? null,
       },
-      new UniqueEntityID(raw.id),
+      new UniqueEntityID(String(raw.id)),
     );
   }
 

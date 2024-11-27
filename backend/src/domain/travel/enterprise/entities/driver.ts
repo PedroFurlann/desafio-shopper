@@ -1,6 +1,6 @@
-import { Optional } from "../../../../core/types/optional";
+import { Optional } from '../../../../core/types/optional';
 import { Entity } from '../../../../core/entities/entity';
-import { UniqueEntityID } from "src/core/entities/unique-entity-id";
+import { UniqueEntityID } from '../../../../core/entities/unique-entity-id';
 
 export interface DriverProps {
   name: string;
@@ -90,7 +90,10 @@ export class Driver extends Entity<DriverProps> {
     this.props.updatedAt = new Date();
   }
 
-  static create(props: Optional<DriverProps, 'createdAt'>, id?: UniqueEntityID) {
+  static create(
+    props: Optional<DriverProps, 'createdAt'>,
+    id?: UniqueEntityID,
+  ) {
     const driver = new Driver(
       {
         ...props,
