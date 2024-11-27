@@ -14,6 +14,8 @@ import { DriverCard } from "./components/DriverCard";
 import { convertSecondsToHoursAndMinutes } from "../../utils/convertSecondsToHoursAndMinutes";
 import { api } from "../../lib/axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { motion } from 'framer-motion'
 
 interface FormData {
   customerId: string;
@@ -38,6 +40,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [estimatedRide, setEstimatedRide] = useState<EstimatedRide | null>(null)
   const [selectedDriver, setSelectedDriver] = useState<Driver>({} as Driver)
+
+  const navigate = useNavigate()
+
+  const driverCardAnimation = {
+    hidden: { opacity: 0, x: -50 },
+    visible: { opacity: 1, x: 0 },
+  };
 
   const validationSchema = yup.object().shape({
     customerId: yup.string().trim().required("Informe o id do usuário"),
@@ -135,6 +144,7 @@ export default function Home() {
     try {
       await api.patch("/ride/confirm", confirmRideBody)
       const message = "Viagem confirmada com sucesso. Bon voyage!"
+      navigate('/history')
       toast.success(message, {
         position: "top-right",
         autoClose: 3000,
@@ -244,7 +254,6 @@ export default function Home() {
                   <Button
                     label="Estimar"
                     onClick={handleSubmit(handleEstimateRide)}
-                    size="medium"
                   />
                 </div>
               )}
@@ -269,16 +278,26 @@ export default function Home() {
 
                   <StaticMap
                     origin={[estimatedRide.origin.latitude, estimatedRide.origin.longitude]}
-                    destination={[estimatedRide.destination.latitude, estimatedRide.destination.longitude]} />
+                    destination={[estimatedRide.destination.latitude, estimatedRide.destination.longitude]}
+                  />
 
                   <div className="bg-black p-8 md:w-[500px] w-full flex flex-col gap-4 rounded-md overflow-auto h-96 md:h-[650px]">
-                    {estimatedRide.options.map((driver) => (
-                      <DriverCard
+                    {estimatedRide.options.map((driver, index) => (
+                      <motion.div
                         key={driver.id}
-                        driver={driver}
-                        isSelected={selectedDriver?.id === driver.id}
-                        onClick={() => setSelectedDriver(driver)}
-                      />
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        variants={driverCardAnimation}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                      >
+                        <DriverCard
+                          key={driver.id}
+                          driver={driver}
+                          isSelected={selectedDriver?.id === driver.id}
+                          onClick={() => setSelectedDriver(driver)}
+                        />
+                      </motion.div>
                     ))}
                   </div>
 

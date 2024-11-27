@@ -1,17 +1,17 @@
-import { Driver } from "../../../../DTO/Driver";
 import HomerAvatar from '../../../../assets/homer-avatar.jpeg'
 import TorettoAvatar from '../../../../assets/toretto-avatar.jpg'
 import JamesBondAvatar from '../../../../assets/james-bond-avatar.jpg'
 
 interface DriverCardProps {
-  driver: Driver;
+  driverId: number;
+  driverName: string;
   isSelected: boolean;
   onClick: () => void;
 }
 
-export const DriverCard = ({ driver, isSelected = false, onClick }: DriverCardProps) => {
-  const avatarSrc = driver.id === 1
-    ? HomerAvatar : driver.id === 2
+export const MinDriverCard = ({ driverId, driverName, isSelected = false, onClick }: DriverCardProps) => {
+  const avatarSrc = driverId === 1
+    ? HomerAvatar : driverId === 2
       ? TorettoAvatar
       : JamesBondAvatar
 
@@ -27,20 +27,8 @@ export const DriverCard = ({ driver, isSelected = false, onClick }: DriverCardPr
         alt="Driver avatar"
         className={`w-16 h-16 mb-2 self-center rounded-full object-cover ${isSelected && 'border border-emerald-600'}`}
       />
-      <p>
-        <strong>Motorista:</strong> {driver.name}
-      </p>
-      <p>
-        <strong>Descrição:</strong> {driver.description}
-      </p>
-      <p>
-        <strong>Veículo:</strong> {driver.vehicle}
-      </p>
-      <p>
-        <strong>Avaliação:</strong> {driver.review.rating}/5 ({driver.review.comment})
-      </p>
-      <p>
-        <strong>Valor:</strong> R$ {driver.value.toFixed(2).replace(".", ",")}
+      <p className='self-center'>
+        <strong>Motorista:</strong> {driverName}
       </p>
     </div>
   )
