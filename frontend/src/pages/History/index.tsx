@@ -118,14 +118,15 @@ export default function History() {
               {loading ? (
                 <Loader />
               ) : (
-                <div onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSubmit(handleFetchRides)();
-                  }
-                }} className="flex flex-col items-center justify-center">
-
-
+                <div
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSubmit(handleFetchRides)();
+                    }
+                  }}
+                  className="flex flex-col items-center justify-center"
+                >
                   <div className="flex flex-col gap-12 md:flex-row items-center justify-center md:max-w-[1280px] w-full p-6">
                     <div
                       className="flex flex-col gap-4 items-center justify-center p-8 md:w-96 w-full h-96 bg-black rounded-md border-gray-800">
