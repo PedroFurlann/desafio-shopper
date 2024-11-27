@@ -73,7 +73,7 @@ export class EstimateRideUseCase {
       destination,
     );
 
-    const convertDriverToHttpFormat = (driver: Driver): DriverProps => {
+    const convertDriverNewFormat = (driver: Driver): DriverProps => {
       return {
         id: Number(driver.id.toValue()),
         name: driver.name,
@@ -88,7 +88,7 @@ export class EstimateRideUseCase {
       };
     };
 
-    const driversFormatted = drivers.map(convertDriverToHttpFormat);
+    const driversFormatted = drivers.map(convertDriverNewFormat);
 
     const travelDistanceInKm = estimatedRide.distance / 1000;
 
@@ -106,8 +106,6 @@ export class EstimateRideUseCase {
       driversFormatted,
       travelDistanceInKm,
     );
-
-    console.log(driversSortedPerRideValue);
 
     const estimatedRideResponse = {
       origin: {
