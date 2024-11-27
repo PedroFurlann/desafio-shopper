@@ -1,13 +1,16 @@
+import { InMemoryDriverRepository } from "../../../../test/repositories/in-memory-driver-repository";
 import { InMemoryRideRepository } from '../../../../test/repositories/in-memory-ride-repository';
 import { ConfirmRideUseCase } from './confirm-ride';
 
 let inMemoryRideRepository: InMemoryRideRepository;
+let inMemoryDriverRepository: InMemoryDriverRepository;
 let sut: ConfirmRideUseCase;
 
 describe('Confirm Ride', () => {
   beforeEach(() => {
     inMemoryRideRepository = new InMemoryRideRepository();
-    sut = new ConfirmRideUseCase(inMemoryRideRepository);
+    inMemoryDriverRepository = new InMemoryDriverRepository();
+    sut = new ConfirmRideUseCase(inMemoryRideRepository, inMemoryDriverRepository);
   });
 
   it('should be able to confirm a ride', async () => {

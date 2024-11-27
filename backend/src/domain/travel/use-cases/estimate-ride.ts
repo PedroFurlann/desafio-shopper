@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Either, right } from '../../../core/either';
 import { RideEvaluator } from '../application/evaluator/rideEvaluator';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { DriverRepository } from '../application/repositories/driver-repository';
+import { Driver } from '../enterprise/entities/driver';
 
 interface EstimatedRideResponse {
   origin: {
@@ -29,7 +29,7 @@ interface EstimatedRideResponse {
   routeResponse: any;
 }
 
-type Driver = {
+type DriverProps = {
   id: number;
   name: string;
   description: string;
@@ -55,16 +55,17 @@ type EstimateRideUseCaseResponse = Either<
 
 @Injectable()
 export class EstimateRideUseCase {
-  constructor(private readonly rideEvaluator: RideEvaluator) {}
+  constructor(
+    private readonly rideEvaluator: RideEvaluator,
+    private readonly driverRepository: DriverRepository,
+  ) {}
 
   async execute({
     customerId,
     origin,
     destination,
   }: EstimateRideUseCaseRequest): Promise<EstimateRideUseCaseResponse> {
-    const data = readFileSync(join(process.cwd(), 'drivers.json'), 'utf8');
-
-    const drivers: Driver[] = JSON.parse(data);
+    const drivers = await this.driverRepository.findAll();
 
     const estimatedRide = await this.rideEvaluator.getRoute(
       customerId,
@@ -72,9 +73,26 @@ export class EstimateRideUseCase {
       destination,
     );
 
+    const convertDriverToHttpFormat = (driver: Driver): DriverProps => {
+      return {
+        id: Number(driver.id.toValue()),
+        name: driver.name,
+        description: driver.description,
+        vehicle: driver.vehicle,
+        review: {
+          rating: driver.rating,
+          comment: driver.comment,
+        },
+        tax: driver.tax,
+        minKm: driver.minKm,
+      };
+    };
+
+    const driversFormatted = drivers.map(convertDriverToHttpFormat);
+
     const travelDistanceInKm = estimatedRide.distance / 1000;
 
-    function calculateDriverValues(drivers: Driver[], distanceKm: number) {
+    function calculateDriverValues(drivers: DriverProps[], distanceKm: number) {
       return drivers
         .filter((driver) => distanceKm >= driver.minKm)
         .map((driver) => ({
@@ -85,9 +103,11 @@ export class EstimateRideUseCase {
     }
 
     const driversSortedPerRideValue = calculateDriverValues(
-      drivers,
+      driversFormatted,
       travelDistanceInKm,
     );
+
+    console.log(driversSortedPerRideValue);
 
     const estimatedRideResponse = {
       origin: {

@@ -2,26 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Either, left, right } from '../../../core/either';
 import { Ride } from '../enterprise/entities/ride';
 import { RideRepository } from '../application/repositories/ride-repository';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { DriverRepository } from '../application/repositories/driver-repository';
 
 interface FetchCustomerAndDriverRidesUseCaseRequest {
   customerId: string;
   driverId?: number;
 }
-
-type Driver = {
-  id: number;
-  name: string;
-  description: string;
-  vehicle: string;
-  review: {
-    rating: number;
-    comment: string;
-  };
-  tax: number;
-  minKm: number;
-};
 
 interface FetchCustomerAndDriverRidesResponse {
   customerId: string;
@@ -34,20 +20,17 @@ type FetchCustomerAndDriverRidesUseCaseResponse = Either<
 >;
 @Injectable()
 export class FetchCustomerAndDriverRidesUseCase {
-  constructor(private rideRepository: RideRepository) {}
+  constructor(
+    private readonly rideRepository: RideRepository,
+    private readonly driverRepository: DriverRepository,
+  ) {}
 
   async execute({
     customerId,
     driverId,
   }: FetchCustomerAndDriverRidesUseCaseRequest): Promise<FetchCustomerAndDriverRidesUseCaseResponse> {
-    const data = readFileSync(join(process.cwd(), 'drivers.json'), 'utf8');
-
-    const drivers: Driver[] = JSON.parse(data);
-
     if (driverId) {
-      const driverSelected = drivers.find(
-        (driverChoosed) => driverChoosed.id === driverId,
-      );
+      const driverSelected = await this.driverRepository.findById(driverId);
 
       if (!driverSelected) {
         return left(new Error('400'));
