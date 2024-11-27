@@ -3,6 +3,8 @@ import { Either, right } from '../../../core/either';
 import { RideEvaluator } from '../application/evaluator/rideEvaluator';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { DriverRepository } from "../application/repositories/driver-repository";
+import { UniqueEntityID } from "../../../core/entities/unique-entity-id";
 
 interface EstimatedRideResponse {
   origin: {
@@ -30,14 +32,12 @@ interface EstimatedRideResponse {
 }
 
 type Driver = {
-  id: number;
+  id: UniqueEntityID;
   name: string;
   description: string;
   vehicle: string;
-  review: {
-    rating: number;
-    comment: string;
-  };
+  rating: number;
+  comment: string;
   tax: number;
   minKm: number;
 };
@@ -55,7 +55,7 @@ type EstimateRideUseCaseResponse = Either<
 
 @Injectable()
 export class EstimateRideUseCase {
-  constructor(private readonly rideEvaluator: RideEvaluator) {}
+  constructor(private readonly rideEvaluator: RideEvaluator, private readonly driverRepository: DriverRepository) {}
 
   async execute({
     customerId,
@@ -64,7 +64,7 @@ export class EstimateRideUseCase {
   }: EstimateRideUseCaseRequest): Promise<EstimateRideUseCaseResponse> {
     const data = readFileSync(join(process.cwd(), 'drivers.json'), 'utf8');
 
-    const drivers: Driver[] = JSON.parse(data);
+    const drivers = await this.driverRepository.findAll();
 
     const estimatedRide = await this.rideEvaluator.getRoute(
       customerId,
@@ -102,13 +102,13 @@ export class EstimateRideUseCase {
       duration: estimatedRide.duration,
       options: driversSortedPerRideValue.map((driver) => {
         return {
-          id: driver.id,
+          id: Number(driver.id.toValue()),
           name: driver.name,
           description: driver.description,
           vehicle: driver.vehicle,
           review: {
-            rating: driver.review.rating,
-            comment: driver.review.comment,
+            rating: driver.rating,
+            comment: driver.comment,
           },
           value: Number(driver.value.toFixed(2)),
         };

@@ -4,6 +4,7 @@ import { Ride } from '../enterprise/entities/ride';
 import { RideRepository } from '../application/repositories/ride-repository';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { DriverRepository } from "../application/repositories/driver-repository";
 
 interface ConfirmRideUseCaseRequest {
   customerId: string;
@@ -18,23 +19,10 @@ interface ConfirmRideUseCaseRequest {
   value: number;
 }
 
-type Driver = {
-  id: number;
-  name: string;
-  description: string;
-  vehicle: string;
-  review: {
-    rating: number;
-    comment: string;
-  };
-  tax: number;
-  minKm: number;
-};
-
 type ConfirmRideUseCaseResponse = Either<Error, null>;
 @Injectable()
 export class ConfirmRideUseCase {
-  constructor(private rideRepository: RideRepository) {}
+  constructor(private readonly rideRepository: RideRepository, private readonly driverRepository: DriverRepository) {}
 
   async execute({
     customerId,
@@ -58,14 +46,9 @@ export class ConfirmRideUseCase {
 
     const data = readFileSync(join(process.cwd(), 'drivers.json'), 'utf8');
 
-    const drivers: Driver[] = JSON.parse(data);
+    const driverSelected = await this.driverRepository.findById(driver.id);
 
-    const driverSelected = drivers.find(
-      (driverChoosed) =>
-        driverChoosed.id === driver.id && driverChoosed.name === driver.name,
-    );
-
-    if (!driverSelected) {
+    if (!driverSelected || driverSelected.name !== driver.name) {
       return left(new Error('404'));
     }
 

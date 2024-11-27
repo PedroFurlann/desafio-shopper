@@ -149,7 +149,7 @@ export class RideController {
     }
 
     const ridesFormatted = result.isRight()
-      ? result.value.rides.map(RidePresenter.toHTTP)
+      ? result.value.rides.map((ride) => RidePresenter.toHTTP(ride))
       : [];
 
     return {
