@@ -4,8 +4,6 @@ WORKDIR /app
 
 COPY package*.json ./
 
-COPY ./drivers.json /app/drivers.json
-
 RUN npm install
 
 COPY . .

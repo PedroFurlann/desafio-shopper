@@ -14,8 +14,6 @@ services:
       db:
         condition: service_healthy
     command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
-    volumes:
-      - ./drivers.json:/app/drivers.json
 
   frontend:
     build:
