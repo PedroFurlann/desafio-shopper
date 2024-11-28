@@ -32,6 +32,8 @@ export default function History() {
   const [rides, setRides] = useState<Ride[]>([])
   const [currentPage, setCurrentPage] = useState(1);
 
+  console.log(rides)
+
   const navigate = useNavigate()
 
   const itemsPerPage = 3
@@ -58,10 +60,16 @@ export default function History() {
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: yupResolver(validationSchema),
   });
+
+  const cleanForm = () => {
+    reset();
+    setSelectedDriverId(null)
+  }
 
   const handleToggleSelectDriver = (driverId: number) => {
     if (driverId === selectedDriverId) setSelectedDriverId(null)
@@ -211,7 +219,7 @@ export default function History() {
                         animate="visible"
                         exit="hidden"
                         variants={minDriverCardAnimation}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        transition={{ duration: 0.5, delay: (index + 1) * 0.1 }}
                       >
                         <HistoryCard
                           key={ride.id}
@@ -228,7 +236,10 @@ export default function History() {
                   />
 
                   <Button
-                    onClick={() => setRides([])}
+                    onClick={() => {
+                      cleanForm();
+                      setRides([]);
+                    }}
                     label="Voltar"
                     bgColor="bg-red-500"
                   />

@@ -55,7 +55,7 @@ export default function Home() {
       "different-from-origin",
       "Origem e destino não podem ser iguais",
       function (value) {
-        return value !== this.parent.origin;
+        return value.toLowerCase() !== this?.parent?.origin?.toLowerCase();
       }
     ),
   })
@@ -81,6 +81,22 @@ export default function Home() {
     setLoading(true)
     try {
       const { data } = await api.post("/ride/estimate", estimateBody)
+      if (data?.distance < 1) {
+        const message = "Viagens com menos de 1km não podem ser realizadas."
+        toast.error(message, {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "dark",
+          style: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontWeight: "bold",
+          },
+        });
+        return;
+      }
+
       setEstimatedRide(data)
       const message = "Viagem estimada com sucesso! Escolha seu motorista para realizar o trajeto."
       toast.success(message, {

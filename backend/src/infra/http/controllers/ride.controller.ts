@@ -61,7 +61,7 @@ export class RideController {
   async estimateRide(@Body() body: EstimateRideBodySchemaType): Promise<any> {
     const { customer_id, origin, destination } = body;
 
-    if (origin === destination) {
+    if (origin.toLowerCase() === destination.toLowerCase()) {
       throw new InvalidDataException(
         'Os dados fornecidos no corpo da requisição são inválidos',
       );
@@ -98,7 +98,7 @@ export class RideController {
       value,
     } = body;
 
-    if (origin === destination) {
+    if (origin.toLowerCase() === destination.toLowerCase()) {
       throw new InvalidDataException(
         'Os dados fornecidos no corpo da requisição são inválidos',
       );
@@ -149,7 +149,7 @@ export class RideController {
     }
 
     const ridesFormatted = result.isRight()
-      ? result.value.rides.map(RidePresenter.toHTTP)
+      ? result.value.rides.map((ride) => RidePresenter.toHTTP(ride))
       : [];
 
     return {

@@ -1,14 +1,17 @@
+import { InMemoryDriverRepository } from "../../../../test/repositories/in-memory-driver-repository";
 import { makeRide } from '../../../../test/factories/make-ride';
 import { InMemoryRideRepository } from '../../../../test/repositories/in-memory-ride-repository';
 import { FetchCustomerAndDriverRidesUseCase } from './fetch-customer-and-driver-rides';
 
 let inMemoryRideRepository: InMemoryRideRepository;
+let inMemoryDriverRepository: InMemoryDriverRepository;
 let sut: FetchCustomerAndDriverRidesUseCase;
 
 describe('Fetch customer and driver rides', () => {
   beforeEach(() => {
     inMemoryRideRepository = new InMemoryRideRepository();
-    sut = new FetchCustomerAndDriverRidesUseCase(inMemoryRideRepository);
+    inMemoryDriverRepository = new InMemoryDriverRepository()
+    sut = new FetchCustomerAndDriverRidesUseCase(inMemoryRideRepository, inMemoryDriverRepository);
   });
 
   it('should be able to fetch all customer rides', async () => {
@@ -25,13 +28,11 @@ describe('Fetch customer and driver rides', () => {
     const fakeRide1 = makeRide({
       customerId: '1',
       driverId: fakeDriver1.id,
-      driverName: fakeDriver1.name,
     });
 
     const fakeRide2 = makeRide({
       customerId: '1',
       driverId: fakeDriver2.id,
-      driverName: fakeDriver2.name,
     });
 
     await inMemoryRideRepository.create(fakeRide1);
@@ -62,13 +63,11 @@ describe('Fetch customer and driver rides', () => {
     const fakeRide1 = makeRide({
       customerId: '1',
       driverId: fakeDriver1.id,
-      driverName: fakeDriver1.name,
     });
 
     const fakeRide2 = makeRide({
       customerId: '1',
       driverId: fakeDriver2.id,
-      driverName: fakeDriver2.name,
     });
 
     await inMemoryRideRepository.create(fakeRide1);

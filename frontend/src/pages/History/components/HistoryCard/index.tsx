@@ -17,7 +17,7 @@ export const HistoryCard = ({ ride }: HistoryCardProps) => {
         {dayjs(ride.date).format("DD/MM/YYYY HH:mm")}
       </p>
       <p>
-        <strong>Nome do motorista:</strong> {ride.driver.name}
+        <strong>Motorista:</strong> {ride.driver.name}
       </p>
       <p>
         <strong>Origem:</strong> {ride.origin}

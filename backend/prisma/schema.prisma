@@ -7,6 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Driver {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  vehicle     String
+  tax         Decimal
+  minKm       Decimal
+  rating      Decimal
+  comment     String
+  rides       Ride[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+}
+
 model Ride {
   id          String    @id @default(uuid())
   customer_id String
@@ -17,6 +31,7 @@ model Ride {
   driver_id   Int
   driver_name String
   value       Decimal
+  driver      Driver    @relation(fields: [driver_id], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
 }
